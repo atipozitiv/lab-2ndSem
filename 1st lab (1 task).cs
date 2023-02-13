@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace lab_1
-{
-	internal class Program
-	{
+namespace lab_1 {
+	internal class Program {
 		static void Main(string[] args) {
-			Console.WriteLine("введите число");
+			Console.WriteLine("Введите число");
 			int Number = Convert.ToInt32(Console.ReadLine());
-			Console.WriteLine("в какую степень его возвести?");
+			Console.WriteLine("В какую степень его возвести?");
 			int Power = Convert.ToInt32(Console.ReadLine());
 			int NewNumber = Number;
 			int StartPower = Power;
