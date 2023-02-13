@@ -5,10 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Schema;
 
-namespace lab_1
-{
-	internal class Program
-	{
+namespace lab_1 {
+	internal class Program {
 		static void Main(string[] args) {
 			Console.WriteLine("введите число");
 			String FirstNumber = Console.ReadLine();
