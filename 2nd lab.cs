@@ -5,19 +5,13 @@
 * 13.2.2023                       *
 **********************************/
 
-using lab;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace lab {
   public class Document {
-    public string Name = "MyGreatDoc";    // и так для всех
+    public string Name = "MyGreatDoc";
     public string Author = "Leonardo";
-    public string[] KeyWord = {"lol", "kek", "cheburek"};
+    public string KeyWord = "lol, kek, cheburek";
     public string Topic = "Top";
     public string Storage = "T:/User/direction/file.doc";
     virtual public void Info() {
@@ -25,7 +19,21 @@ namespace lab {
     }
   }
 
-  class Excel: Document {
+  class Word: Document {
+    int PageCount = 17;
+    public override void Info() {
+      Console.WriteLine("Текстовый Word файл: " + Name + "\nавтор: " + Author + "\nколичество страниц: " + PageCount + "\nКлючевые слова: " + KeyWord);
+    }
+  }
+
+  class Pdf: Document {
+    string Font = "Calibri";
+    public override void Info() {
+      Console.WriteLine("PDF файл: " + Name + "\nавтор " + Author + "\nшрифт: " + Font);
+    }
+  }
+
+  class Excel : Document {
     int RowCount = 7;
     int ColumnCount = 9;
     public override void Info() {
@@ -33,17 +41,47 @@ namespace lab {
     }
   }
 
-  class Word: Document {
-    int PageCount = 17;
+  class Txt : Document {
+    int FontSize = 12;
     public override void Info() {
-      Console.WriteLine("Текстовый Word файл: " + Name + "\nавтора - " + Author + "\nколичество страниц: " + PageCount + "Ключевые слова: " + KeyWord);
+      Console.WriteLine("TXT файл " + Name + "\nРазмер шриффта: " + FontSize + "\nавтор " + Author);
     }
   }
-  
-  
+
+  class Html : Document {
+    int StringCount = 200;
+    public override void Info() {
+      Console.WriteLine("HTML файл: " + Name + "\nстрок: " + StringCount);
+    }
+  }
   internal class Program {
     static void Main(string[] args) {
-      //синглтон и свитч кейс где пользователь выбирает цифру и выводит одно из (excel, word...)
+      Console.WriteLine("Выберите, какой файл хотите вывести\n1-Word\n2-PDF\n3-Excel\n4-TXT\n5-HTML");
+      string choise = Console.ReadLine();
+      Console.Clear();
+      Html Html = new Html();
+      Word Word = new Word();
+      Pdf Pdf = new Pdf();
+      Excel Excel = new Excel();
+      Txt Txt = new Txt();
+      switch(choise) {
+        case "1":
+          Word.Info();
+          break;
+        case "2":
+          Pdf.Info();
+          break;
+        case "3":
+          Excel.Info();
+          break;
+        case "4":
+          Txt.Info();
+          break;
+        case "5":
+          Html.Info();
+          break;
+      }
+      Console.ReadKey();
     }
   }
 }
