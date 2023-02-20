@@ -19,14 +19,14 @@ namespace lab {
     }
   }
 
-  class Word: Document {
+  class Word : Document {
     int PageCount = 17;
     public override void Info() {
       Console.WriteLine("Текстовый Word файл: " + Name + "\nавтор: " + Author + "\nколичество страниц: " + PageCount + "\nКлючевые слова: " + KeyWord);
     }
   }
 
-  class Pdf: Document {
+  class Pdf : Document {
     string Font = "Calibri";
     public override void Info() {
       Console.WriteLine("PDF файл: " + Name + "\nавтор " + Author + "\nшрифт: " + Font);
@@ -54,17 +54,33 @@ namespace lab {
       Console.WriteLine("HTML файл: " + Name + "\nстрок: " + StringCount);
     }
   }
+
+  public class Singleton {
+    public static Singleton Instance {
+      get {
+        if (instance == null) instance = new Singleton();
+        return instance;
+      }
+    }
+    public void Method (){
+      Console.WriteLine("Выберите, какой файл хотите вывести\n1-Word\n2-PDF\n3-Excel\n4-TXT\n5-HTML");
+    }
+    private Singleton() { }
+    private static Singleton instance;
+  }
   internal class Program {
     static void Main(string[] args) {
-      Console.WriteLine("Выберите, какой файл хотите вывести\n1-Word\n2-PDF\n3-Excel\n4-TXT\n5-HTML");
-      string choise = Console.ReadLine();
+      Singleton.Instance.Method();
+      string Choise = Console.ReadLine();
       Console.Clear();
+
       Html Html = new Html();
       Word Word = new Word();
       Pdf Pdf = new Pdf();
       Excel Excel = new Excel();
       Txt Txt = new Txt();
-      switch(choise) {
+
+      switch (Choise) {
         case "1":
           Word.Info();
           break;
