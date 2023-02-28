@@ -78,19 +78,11 @@ namespace lab {
   class SquareMatrix {
     public int Size;
     public int[,] Digits = new int[10, 10];
-    public void ToString(SquareMatrix Matrix) {
-      for (int FirstDigit = 0; FirstDigit < Matrix.Size; ++FirstDigit) {
-        for (int SecondDigit = 0; SecondDigit < Matrix.Size; ++SecondDigit) {
-          Console.Write("{0,5}", Matrix.Digits[FirstDigit, SecondDigit]);
-        }
-        Console.WriteLine();
-      }
-    }
-    /*public int CompareTo(int FirstDigit, int SecondDigit) {
-      if (FirstDigit > SecondDigit) return 1;
-      if (FirstDigit < SecondDigit) return -1;
+    public int CompareTo(SquareMatrix FirstMatrix, SquareMatrix SecondMatrix) {
+      if (FirstMatrix.Sum(FirstMatrix) > SecondMatrix.Sum(SecondMatrix)) return 1;
+      if (FirstMatrix.Sum(FirstMatrix) < SecondMatrix.Sum(SecondMatrix)) return -1;
       return 0;
-    }*/
+    }
     public static SquareMatrix operator+ (SquareMatrix Matrix, int Digit) {
       for (int RowIndex = 0; RowIndex < Matrix.Size; ++RowIndex) {
         for (int ColumnIndex = 0; ColumnIndex < Matrix.Size; ++ColumnIndex) {
@@ -144,6 +136,14 @@ namespace lab {
         return false;
       }
     }
+    public void ToString(SquareMatrix Matrix) {
+      for (int FirstDigit = 0; FirstDigit < Matrix.Size; ++FirstDigit) {
+        for (int SecondDigit = 0; SecondDigit < Matrix.Size; ++SecondDigit) {
+          Console.Write("{0,5}", Matrix.Digits[FirstDigit, SecondDigit]);
+        }
+        Console.WriteLine();
+      }
+    }
     public static bool operator==(SquareMatrix MatrixLeft, SquareMatrix MatrixRight) {
       if (MatrixLeft.Sum(MatrixLeft) == MatrixRight.Sum(MatrixRight)) {
         return true;
@@ -190,6 +190,26 @@ namespace lab {
         }
       }
       return Result;
+    }
+    public override bool Equals(object other) {
+      bool result = false;
+      if (other is SquareMatrix) {
+        var param = other as SquareMatrix;
+        if ((param.Digits == this.Digits) && (param.Size == this.Size))
+          result = true;
+      }
+      return result;
+    }
+    public override int GetHashCode() {
+      return (int)this.Digits[0,0];
+    }
+  }
+  class Prototip {
+    public int Size;
+    public int[,] Digits = new int[10, 10];
+    public SquareMatrix ds;
+    public Prototip() {
+      ds = new SquareMatrix();
     }
   }
   internal class Program {
