@@ -20,59 +20,9 @@ namespace lab {
 
   [Serializable]
   class TextFile: IOriginator {
-    string Path { get; set; }
+    public string Path { get; set; }
     public string Content { get; set; }
-    public static void Redactor(string Path) {
-      bool Working = true;
-      while (Working) {
-        Console.WriteLine("выберите действие:\n1 - добавить символы\n2 - стереть символы\n3 - откатиться назад\n4 - показать текст\n5 - выход");
-        string Choice = Console.ReadLine();
-        switch (Choice) {
-          case "1":
-            Console.WriteLine("какую строчку добавить?");
-            string Appending = Console.ReadLine();
-            File.AppendAllText(Path, Appending);
-            break;
-          case "2":
-            string ReservePath = "";
-            string DeathPath = "";
-            for (int Position = 0; Position < Path.Length - 4; ++Position) {
-              ReservePath += Path[Position];
-              DeathPath += Path[Position];
-            }
-            ReservePath += "reserve.txt";
-            DeathPath += "deth.txt";
-            Console.WriteLine("сколько символов стереть?");
-            int CountOfDeleting = Convert.ToInt32(Console.ReadLine());
-            FileStream MomFile = new FileStream(Path, FileMode.OpenOrCreate);
-            FileStream SonFile = new FileStream(ReservePath, FileMode.OpenOrCreate);
-            MomFile.CopyTo(SonFile,(int)MomFile.Length - CountOfDeleting);
-            MomFile.Flush();
-            MomFile.Close();
-            SonFile.Flush();
-            SonFile.Close();
-            File.Replace(Path, ReservePath, DeathPath);
-            File.Delete(DeathPath);
-            File.Move(ReservePath, Path);
-            break;
-          case "3":
-            MyFile.RestoreState(fnc);
-            break;
-          case "4":
-            Console.Clear();
-            Console.WriteLine(File.ReadAllText(Path));
-            Console.WriteLine("\n\n\nнажмите любую клавишу, чтобы продолжить");
-            Console.ReadKey();
-            break;
-          case "5":
-            Working = false;
-            break;
-          default:
-            Console.WriteLine("неверный выбор");
-            break;
-        }
-      }
-    }
+    
     public void Serialize(FileStream fs) {
       BinaryFormatter bf = new BinaryFormatter();
       bf.Serialize(fs, this);
@@ -107,6 +57,16 @@ namespace lab {
     object GetMemento();
     void SetMemento(object memento);
   }
+  public class Caretaker {
+    private object memento;
+    public void SaveState(IOriginator originator) {
+      memento = originator.GetMemento();
+    }
+
+    public void RestoreState(IOriginator originator) {
+      originator.SetMemento(memento);
+    }
+  }
 
   class Search {
     public static void Searching(string Path, string[] KeyWords) {
@@ -133,11 +93,63 @@ namespace lab {
       int Choice = Convert.ToInt32(Console.ReadLine());
       if (Choice == 1) {
         Console.WriteLine("Введите путь к файлу");
-        string MyPath = Console.ReadLine();
         TextFile MyFile = new TextFile();
-        MyFile.Content = File.ReadAllText(MyPath);
-        TextFile.Redactor(MyPath);
-
+        MyFile.Path = Console.ReadLine();
+        MyFile.Content = File.ReadAllText(MyFile.Path);   
+        bool Working = true;
+        while (Working) {
+          Console.WriteLine("выберите действие:\n1 - добавить символы\n2 - стереть символы\n3 - откатиться назад\n4 - показать текст\n5 - выход");
+          string ThisChoice = Console.ReadLine();
+          Caretaker ct = new Caretaker();
+          switch (ThisChoice) {
+            case "1":
+              Console.WriteLine("какую строчку добавить?");
+              string Appending = Console.ReadLine();
+              File.AppendAllText(MyFile.Path, Appending);
+              MyFile.Content = File.ReadAllText(MyFile.Path);
+              ct.SaveState(MyFile);
+              break;
+            case "2":
+              string ReservePath = "";
+              string DeathPath = "";
+              for (int Position = 0; Position < MyFile.Path.Length - 4; ++Position) {
+                ReservePath += MyFile.Path[Position];
+                DeathPath += MyFile.Path[Position];
+              }
+              ReservePath += "reserve.txt";
+              DeathPath += "deth.txt";
+              Console.WriteLine("сколько символов стереть?");
+              int CountOfDeleting = Convert.ToInt32(Console.ReadLine());
+              FileStream MomFile = new FileStream(MyFile.Path, FileMode.OpenOrCreate);
+              FileStream SonFile = new FileStream(ReservePath, FileMode.OpenOrCreate);
+              MomFile.CopyTo(SonFile, (int)MomFile.Length - CountOfDeleting);
+              MomFile.Flush();
+              MomFile.Close();
+              SonFile.Flush();
+              SonFile.Close();
+              File.Replace(MyFile.Path, ReservePath, DeathPath);
+              File.Delete(DeathPath);
+              File.Move(ReservePath, MyFile.Path);
+              MyFile.Content = File.ReadAllText(MyFile.Path);
+              ct.SaveState(MyFile);
+              break;
+            case "3":
+              ct.RestoreState(MyFile);
+              break;
+            case "4":
+              Console.Clear();
+              Console.WriteLine(File.ReadAllText(MyFile.Path));
+              Console.WriteLine("\n\n\nнажмите любую клавишу, чтобы продолжить");
+              Console.ReadKey();
+              break;
+            case "5":
+              Working = false;
+              break;
+            default:
+              Console.WriteLine("неверный выбор");
+              break;
+          }
+        }        
       } else if (Choice == 2) {
         bool OneMoreWord = true;
         Console.WriteLine("Введите путь к каталогу с файлами");
