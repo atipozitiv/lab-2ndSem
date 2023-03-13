@@ -19,10 +19,10 @@ using System.Xml.Serialization;
 namespace lab {
 
   [Serializable]
-  class TextFile: IOriginator {
+  class TextFile : IOriginator {
     public string Path { get; set; }
     public string Content { get; set; }
-    
+
     public void Serialize(FileStream fs) {
       BinaryFormatter bf = new BinaryFormatter();
       bf.Serialize(fs, this);
@@ -41,7 +41,7 @@ namespace lab {
       XmlSerializer bf = new XmlSerializer(this.GetType());
     }
     object IOriginator.GetMemento() {
-      return new Memento {Content = this.Content};
+      return new Memento { Content = this.Content };
     }
     void IOriginator.SetMemento(object memento) {
       if (memento is Memento) {
@@ -50,7 +50,7 @@ namespace lab {
       }
     }
   }
-  class Memento {
+  class Memento { 
     public string Content { get; set; }
   }
   public interface IOriginator {
@@ -74,7 +74,7 @@ namespace lab {
       foreach (string file in Files) {
         bool Flag = true;
         foreach (string KeyWord in KeyWords) {
-          if (KeyWord != null) { 
+          if (KeyWord != null) {
             if (!File.ReadAllText(file).Contains(KeyWord)) {
               Flag = false;
             }
@@ -95,7 +95,7 @@ namespace lab {
         Console.WriteLine("Введите путь к файлу");
         TextFile MyFile = new TextFile();
         MyFile.Path = Console.ReadLine();
-        MyFile.Content = File.ReadAllText(MyFile.Path);   
+        MyFile.Content = File.ReadAllText(MyFile.Path);
         bool Working = true;
         while (Working) {
           Console.WriteLine("выберите действие:\n1 - добавить символы\n2 - стереть символы\n3 - откатиться назад\n4 - показать текст\n5 - выход");
@@ -103,13 +103,15 @@ namespace lab {
           Caretaker ct = new Caretaker();
           switch (ThisChoice) {
             case "1":
+              ct.SaveState(MyFile);
               Console.WriteLine("какую строчку добавить?");
               string Appending = Console.ReadLine();
               File.AppendAllText(MyFile.Path, Appending);
               MyFile.Content = File.ReadAllText(MyFile.Path);
-              ct.SaveState(MyFile);
+              
               break;
             case "2":
+              ct.SaveState(MyFile);
               string ReservePath = "";
               string DeathPath = "";
               for (int Position = 0; Position < MyFile.Path.Length - 4; ++Position) {
@@ -131,10 +133,18 @@ namespace lab {
               File.Delete(DeathPath);
               File.Move(ReservePath, MyFile.Path);
               MyFile.Content = File.ReadAllText(MyFile.Path);
-              ct.SaveState(MyFile);
+              
               break;
             case "3":
+              
               ct.RestoreState(MyFile);
+              //File.Create(MyFile.Path + ".txt");
+              FileStream SecondFile = new FileStream(MyFile.Path + ".txt", FileMode.OpenOrCreate);
+              SecondFile.Flush();
+              SecondFile.Close();
+              File.AppendAllText(MyFile.Path + ".txt", MyFile.Content);
+              File.Replace(MyFile.Path, MyFile.Path + ".txt", "1");
+              File.Replace(MyFile.Path + ".txt", MyFile.Path, "1");
               break;
             case "4":
               Console.Clear();
@@ -149,7 +159,7 @@ namespace lab {
               Console.WriteLine("неверный выбор");
               break;
           }
-        }        
+        }
       } else if (Choice == 2) {
         bool OneMoreWord = true;
         Console.WriteLine("Введите путь к каталогу с файлами");
