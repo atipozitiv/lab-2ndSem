@@ -11,6 +11,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace lab {
   public class OhWords {
@@ -26,16 +27,17 @@ namespace lab {
     }
     static string ChangeWrongWords(string FileBody) { //исправить слова
       foreach (var Word in WrongWords) {
-        if () {                         //(Word.Key == "") {
+        if (Word.Key) {                         //(Word.Key == "") {
           
         }
       }
       return FileBody;
     }
 
-    static string ChangePhoneNumbers(String FileBody) { //заменить вид номера используя регулярные выражения
-      string Pattern = "(";
+    static string ChangePhoneNumbers(string FileBody) { //заменить вид номера используя регулярные выражения
+      string Pattern = @"([0-9]{3})[0-9]{3}-[0-9]{2}-[0-9]{2}";
       Regex regex = new Regex(Pattern);
+      FileBody = regex.Replace(FileBody, "+38")
       return FileBody;
     }
   }
