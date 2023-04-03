@@ -17,10 +17,10 @@ namespace lab_1 {
       foreach(var Word in WrongWords) {
         string[] EveryKey = Word.Key.Split('-');
         foreach(var Key in EveryKey) {
-          Console.WriteLine(Key);
+          Input = Input.Replace(Key, Word.Value);
         }
       }
-      
+      Console.WriteLine(Input);
       Console.ReadKey();
     }
   }
