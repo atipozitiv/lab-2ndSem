@@ -23,25 +23,29 @@ namespace lab {
       string FileBody = File.ReadAllText(Path);
       FileBody = ChangeWrongWords(FileBody);
       FileBody = ChangePhoneNumbers(FileBody);
-      //заменить файл новым текстом
+      File.WriteAllText(Path, FileBody);
     }
-    static string ChangeWrongWords(string FileBody) { //исправить слова
+    static string ChangeWrongWords(string FileBody) { 
       foreach (var Word in WrongWords) {
-        if (Word.Key) {                         //(Word.Key == "") {
-          
+        string[] EveryKey = Word.Key.Split('-');
+        foreach (var Key in EveryKey) {
+          FileBody = FileBody.Replace(Key, Word.Value);
         }
       }
       return FileBody;
     }
 
     static string ChangePhoneNumbers(string FileBody) { //заменить вид номера используя регулярные выражения
-      string Pattern = @"([0-9]{3})[0-9]{3}-[0-9]{2}-[0-9]{2}";
+      string Pattern = @"[(]\d{3}[)]\s\d{3}[-]\d{2}[-]\d{2}";
       Regex regex = new Regex(Pattern);
-      FileBody = regex.Replace(FileBody, "+38")
+      while (regex.IsMatch(FileBody)) {
+        string Number = regex.Match(FileBody).ToString();
+        Number = "+38" + Number[1].ToString() + " " + Number[2].ToString() + Number[3].ToString() + " " + Number[6].ToString() + Number[7].ToString() + Number[8].ToString() + " " + Number[10].ToString() + Number[11].ToString() + " " + Number[13].ToString() + Number[14].ToString();
+        FileBody = regex.Replace(FileBody, Number, 1);
+      }
       return FileBody;
     }
   }
-
 
   internal class Program {
     static void Main(string[] args) {     
